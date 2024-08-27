@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 
-import 'package:phomu/screens/signup_screen.dart';
+import 'package:phomu/screens/login_screen.dart';
 import 'package:phomu/widgets/go_to_first_screen_widget.dart';
 import 'package:phomu/widgets/orange_button.dart';
 import 'package:phomu/widgets/textbox_widget.dart';
 
-class Login extends StatefulWidget {
-  const Login({super.key, required this.isFirstNavigatedSocialLoginButton});
-
+class SignUp extends StatefulWidget {
+  const SignUp({super.key, required this.isFirstNavigatedSocialLoginButton});
   final bool isFirstNavigatedSocialLoginButton;
   @override
-  State<Login> createState() => _LoginState();
+  State<SignUp> createState() => _SignUpState();
 }
 
-class _LoginState extends State<Login> {
+class _SignUpState extends State<SignUp> {
   final String logo = 'assets/images/dk_logo.png';
   final String mainPicture = "assets/images/dm_hub.png";
   bool _loginColumnVisible = false;
@@ -94,11 +93,25 @@ class _LoginState extends State<Login> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Login Form",
+                        "Sign up Form",
                         style: TextStyle(
                           fontFamily: 'Outfit-Bold',
                           fontSize: 30,
                         ),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      TextBoxWidget(
+                        labelText: "name",
+                        obscureText: false,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      TextBoxWidget(
+                        labelText: "nickname",
+                        obscureText: false,
                       ),
                       SizedBox(
                         height: 20,
@@ -114,6 +127,13 @@ class _LoginState extends State<Login> {
                         labelText: "password",
                         obscureText: true,
                       ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      TextBoxWidget(
+                        labelText: "confirm password",
+                        obscureText: true,
+                      ),
                     ],
                   ),
                   const SizedBox(
@@ -123,7 +143,7 @@ class _LoginState extends State<Login> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
-                        "Need an account?",
+                        "Have an account?",
                         style: TextStyle(
                             fontFamily: 'Outfit',
                             fontSize: 14,
@@ -139,7 +159,7 @@ class _LoginState extends State<Login> {
                             PageRouteBuilder(
                               pageBuilder:
                                   (context, animation, secondaryAnimation) =>
-                                      const SignUp(
+                                      const Login(
                                 isFirstNavigatedSocialLoginButton: false,
                               ),
                               transitionsBuilder: (context, animation,
@@ -161,7 +181,7 @@ class _LoginState extends State<Login> {
                               fullscreenDialog: true,
                             )),
                         child: const Text(
-                          "Sign up",
+                          "Log in",
                           style: TextStyle(
                             fontFamily: 'Outfit',
                             fontSize: 14,
@@ -187,9 +207,7 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                     child: const OrangeButton(
-                      text: "Log in",
-                      heroTag: "login_tag",
-                    ),
+                        text: "Sign Up", heroTag: "signup_tag"),
                   ),
                   const SizedBox(
                     height: 80,

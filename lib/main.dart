@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        primaryColor: const Color(0xffe4e3e3),
+        primaryColor: Colors.white,
       ),
       home: const HomeScreen(
         isFirstNavigated: true,
