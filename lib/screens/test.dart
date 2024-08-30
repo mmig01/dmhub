@@ -73,27 +73,12 @@ class AuthStateScreenState extends State<AuthStateScreen> {
       await FirebaseAuth.instance.signOut();
       // 로그아웃 후 HomeScreen으로 이동
       if (mounted) {
-        Navigator.push(
-          context,
-          PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) =>
-                const HomeScreen(
-              isFirstNavigated: true,
-            ),
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) {
-              const begin = 0.0;
-              const end = 1.0;
-              final opacityTween = Tween(begin: begin, end: end);
-              final opacityAnimation = animation.drive(opacityTween);
-              return FadeTransition(
-                opacity: opacityAnimation,
-                child: child,
-              );
-            },
-            transitionDuration: const Duration(seconds: 1), // 애니메이션의 길이 설정
-            fullscreenDialog: true,
-          ),
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+              builder: (context) => const HomeScreen(
+                    isFirstNavigated: true,
+                  )),
+          (Route<dynamic> route) => false, // 모든 이전 화면을 제거
         );
       }
     } catch (e) {

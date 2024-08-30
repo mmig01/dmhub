@@ -15,55 +15,45 @@ class _HomeScreen2State extends State<HomeScreen2>
   final String mainPicture = "assets/images/dm_hub.png";
   bool _logoVisible = false;
 
-  late AnimationController _controller;
-
   @override
   void initState() {
     super.initState();
     Future.delayed(const Duration(milliseconds: 500), () {
-      setState(() {
-        _logoVisible = true;
-      });
+      if (mounted) {
+        setState(() {
+          _logoVisible = true;
+        });
+      }
     });
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // 3초 후에 자동으로 다음 페이지로 이동
-      // 3초 후에 자동으로 다음 페이지로 이동
-      Future.delayed(const Duration(milliseconds: 1500), () {
-        if (mounted) {
-          Navigator.push(
-            context,
-            PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) =>
-                  const Login(
-                isFirstNavigatedSocialLoginButton: true,
-              ),
-              transitionsBuilder:
-                  (context, animation, secondaryAnimation, child) {
-                const begin = 0.0;
-                const end = 1.0;
-                final opacityTween = Tween(begin: begin, end: end);
-                final opacityAnimation = animation.drive(opacityTween);
-                return FadeTransition(
-                  opacity: opacityAnimation,
-                  child: child,
-                );
-              },
-              transitionDuration: const Duration(seconds: 1), // 애니메이션의 길이 설정
-
-              fullscreenDialog: true,
+    // 3초 후에 자동으로 다음 페이지로 이동
+    Future.delayed(const Duration(milliseconds: 1500), () {
+      if (mounted) {
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                const Login(
+              isFirstNavigatedSocialLoginButton: true,
             ),
-          );
-        }
-      });
-    });
-  }
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              const begin = 0.0;
+              const end = 1.0;
+              final opacityTween = Tween(begin: begin, end: end);
+              final opacityAnimation = animation.drive(opacityTween);
+              return FadeTransition(
+                opacity: opacityAnimation,
+                child: child,
+              );
+            },
+            transitionDuration: const Duration(seconds: 1), // 애니메이션의 길이 설정
 
-  @override
-  void dispose() {
-    // 애니메이션 컨트롤러 자원 해제
-    _controller.dispose();
-    super.dispose();
+            fullscreenDialog: true,
+          ),
+        );
+      }
+    });
   }
 
   @override
