@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:phomu/screens/login_screen.dart';
 import 'package:phomu/widgets/go_to_first_screen_widget.dart';
+import 'package:phomu/widgets/total_login_widget.dart';
 import 'package:phomu/widgets/orange_button.dart';
 import 'package:phomu/widgets/textbox_widget.dart';
 
@@ -215,99 +216,8 @@ class _SignUpState extends State<SignUp> {
                 ],
               ),
             ),
-            AnimatedOpacity(
-              opacity: _socialLoginColumnVisible ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 1000),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        height: 1.0, // 구분선의 높이 (두께)
-                        width: 100,
-                        color: Colors.grey.withOpacity(0.3), // 구분선 색상
-                        margin: const EdgeInsets.symmetric(horizontal: 20.0),
-                      ),
-                      const Text(
-                        "or",
-                        style: TextStyle(fontFamily: 'Outfit', fontSize: 20),
-                      ),
-                      Container(
-                        height: 1.0, // 구분선의 높이 (두께)
-                        width: 100,
-                        color: Colors.grey.withOpacity(0.3), // 구분선 색상
-                        margin: const EdgeInsets.symmetric(horizontal: 20.0),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 40,
-                  ),
-                  SizedBox(
-                    width: 230,
-                    height: 50,
-                    child: FloatingActionButton(
-                      heroTag: 'kakao_logo',
-                      backgroundColor: const Color(0xfffedc3f),
-                      elevation: 3,
-                      onPressed: () {},
-                      child: Row(
-                        children: [
-                          Transform.scale(
-                              scale: 0.6,
-                              child:
-                                  Image.asset('assets/images/kakao_logo.png')),
-                          const Text(
-                            'Continue with Kakao',
-                            style: TextStyle(
-                                color: Color(0xff392929),
-                                fontSize: 16,
-                                fontFamily: 'Outfit',
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  // duplicate,,
-                  SizedBox(
-                    width: 230,
-                    height: 50,
-                    child: FloatingActionButton(
-                      heroTag: 'github_logo',
-                      backgroundColor: Colors.black,
-                      splashColor: Colors.white.withOpacity(0.2),
-                      elevation: 2,
-                      onPressed: () {},
-                      child: Row(
-                        children: [
-                          Transform.scale(
-                              scale: 0.6,
-                              child:
-                                  Image.asset('assets/images/github_logo.png')),
-                          const Text(
-                            'Continue with Github',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'Outfit',
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 70,
-                  ),
-                ],
-              ),
-            ),
+            TotalLoginWidget(
+                socialLoginColumnVisible: _socialLoginColumnVisible),
           ],
         ),
       ),

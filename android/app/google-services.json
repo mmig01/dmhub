@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "781469771810",
+    "project_id": "dmhub-ede12",
+    "storage_bucket": "dmhub-ede12.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:781469771810:android:212beccdf658f5a8f2827b",
+        "android_client_info": {
+          "package_name": "com.dmhub.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8sI13eLKQzF3u39e5LEKdovAnIunL9Ws"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:781469771810:android:99f926ace6416ee3f2827b",
+        "android_client_info": {
+          "package_name": "com.dmhub.com"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8sI13eLKQzF3u39e5LEKdovAnIunL9Ws"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

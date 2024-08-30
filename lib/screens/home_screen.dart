@@ -21,9 +21,11 @@ class _HomeScreenState extends State<HomeScreen>
     super.initState();
     if (widget.isFirstNavigated) {
       Future.delayed(const Duration(seconds: 1), () {
-        setState(() {
-          _logoVisible = true;
-        });
+        if (mounted) {
+          setState(() {
+            _logoVisible = true;
+          });
+        }
       });
     } else {
       _logoVisible = true;
