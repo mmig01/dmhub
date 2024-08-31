@@ -40,9 +40,8 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        primaryColor: Colors.white,
-      ),
+      theme:
+          ThemeData(primaryColor: Colors.white, fontFamily: 'Outfit-Regular'),
       home: _user != null
           ? const AuthStateScreen()
           : const HomeScreen(
