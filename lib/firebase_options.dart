@@ -46,15 +46,17 @@ class DefaultFirebaseOptions {
     messagingSenderId: '781469771810',
     projectId: 'dmhub-ede12',
     authDomain: 'dmhub-ede12.firebaseapp.com',
+    databaseURL: 'https://dmhub-ede12-default-rtdb.firebaseio.com',
     storageBucket: 'dmhub-ede12.appspot.com',
     measurementId: 'G-V00536H4XQ',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyA8sI13eLKQzF3u39e5LEKdovAnIunL9Ws',
-    appId: '1:781469771810:android:99f926ace6416ee3f2827b',
+    appId: '1:781469771810:android:212beccdf658f5a8f2827b',
     messagingSenderId: '781469771810',
     projectId: 'dmhub-ede12',
+    databaseURL: 'https://dmhub-ede12-default-rtdb.firebaseio.com',
     storageBucket: 'dmhub-ede12.appspot.com',
   );
 
@@ -63,7 +65,9 @@ class DefaultFirebaseOptions {
     appId: '1:781469771810:ios:c0d2aa76ece0def1f2827b',
     messagingSenderId: '781469771810',
     projectId: 'dmhub-ede12',
+    databaseURL: 'https://dmhub-ede12-default-rtdb.firebaseio.com',
     storageBucket: 'dmhub-ede12.appspot.com',
+    iosClientId: '781469771810-81erg9bsurbko4bb79r2785vj9etacmp.apps.googleusercontent.com',
     iosBundleId: 'com.example.phomu',
   );
 
@@ -72,7 +76,9 @@ class DefaultFirebaseOptions {
     appId: '1:781469771810:ios:c0d2aa76ece0def1f2827b',
     messagingSenderId: '781469771810',
     projectId: 'dmhub-ede12',
+    databaseURL: 'https://dmhub-ede12-default-rtdb.firebaseio.com',
     storageBucket: 'dmhub-ede12.appspot.com',
+    iosClientId: '781469771810-81erg9bsurbko4bb79r2785vj9etacmp.apps.googleusercontent.com',
     iosBundleId: 'com.example.phomu',
   );
 
@@ -82,6 +88,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '781469771810',
     projectId: 'dmhub-ede12',
     authDomain: 'dmhub-ede12.firebaseapp.com',
+    databaseURL: 'https://dmhub-ede12-default-rtdb.firebaseio.com',
     storageBucket: 'dmhub-ede12.appspot.com',
     measurementId: 'G-0KTZ1375S2',
   );

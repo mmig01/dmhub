@@ -41,7 +41,7 @@ dependencies:
   firebase_database: ^10.4.0
   firebase_auth: 
   google_sign_in:
-  sign_in_with_apple: 
+
 
 dev_dependencies:
   flutter_test:
@@ -71,8 +71,8 @@ flutter:
     - assets/images/dm_hub.png
    
     - assets/images/github_logo.png
-    - assets/images/kakao_logo.png
     - assets/images/google_logo.png
+    - assets/images/apple_logo.png
    
 
   # An image asset can refer to one or more resolution-specific "variants", see

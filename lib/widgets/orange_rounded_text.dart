@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class OrangeButton extends StatelessWidget {
-  const OrangeButton({
+class OrangeRoundedText extends StatelessWidget {
+  const OrangeRoundedText({
     super.key,
     required this.text,
     required this.heroTag,

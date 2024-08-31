@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:phomu/widgets/github_login_button.dart';
 import 'package:phomu/widgets/google_login_button.dart';
 
 class TotalLoginWidget extends StatelessWidget {
@@ -45,8 +46,12 @@ class TotalLoginWidget extends StatelessWidget {
           const SizedBox(
             height: 15,
           ),
-          // duplicate,,
 
+          // duplicate,,
+          const GithubLoginButton(),
+          const SizedBox(
+            height: 15,
+          ),
           const SizedBox(
             height: 70,
           ),

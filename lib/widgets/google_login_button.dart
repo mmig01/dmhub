@@ -24,11 +24,9 @@ class GoogleLoginButtonState extends State<GoogleLoginButton> {
   void initState() {
     super.initState();
     _authSubscription = _auth.authStateChanges().listen((User? user) {
-      if (mounted) {
-        setState(() {
-          _user = user;
-        });
-      }
+      setState(() {
+        _user = user;
+      });
     });
   }
 
@@ -59,25 +57,36 @@ class GoogleLoginButtonState extends State<GoogleLoginButton> {
     }
 
     if (mounted && _user != null) {
-      Navigator.push(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) =>
-              const AuthStateScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = 0.0;
-            const end = 1.0;
-            final opacityTween = Tween(begin: begin, end: end);
-            final opacityAnimation = animation.drive(opacityTween);
-            return FadeTransition(
-              opacity: opacityAnimation,
-              child: child,
-            );
-          },
-          transitionDuration: const Duration(seconds: 1), // 애니메이션의 길이 설정
-          fullscreenDialog: true,
-        ),
+      // 로딩 화면을 잠깐 표시
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return const Center(
+            child: CircularProgressIndicator(), // 로딩 스피너 표시
+          );
+        },
       );
+      // 약간의 지연을 주고 페이지를 이동
+      await Future.delayed(const Duration(seconds: 2));
+
+      // 로딩 화면을 닫고 새 페이지로 이동
+      if (mounted) {
+        Navigator.of(context).pop(); // 로딩 화면 닫기
+      }
+
+      if (mounted) {
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                const AuthStateScreen(),
+
+            transitionDuration: const Duration(seconds: 1), // 애니메이션의 길이 설정
+            fullscreenDialog: true,
+          ),
+        );
+      }
     }
   }
 

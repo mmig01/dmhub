@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:phomu/screens/login_screen.dart';
 import 'package:phomu/widgets/go_to_first_screen_widget.dart';
 import 'package:phomu/widgets/total_login_widget.dart';
-import 'package:phomu/widgets/orange_button.dart';
+import 'package:phomu/widgets/orange_rounded_text.dart';
 import 'package:phomu/widgets/textbox_widget.dart';
 
 class SignUp extends StatefulWidget {
@@ -207,7 +207,7 @@ class _SignUpState extends State<SignUp> {
                         width: 1.0, // 테두리 두께 설정
                       ),
                     ),
-                    child: const OrangeButton(
+                    child: const OrangeRoundedText(
                         text: "Sign Up", heroTag: "signup_tag"),
                   ),
                   const SizedBox(
