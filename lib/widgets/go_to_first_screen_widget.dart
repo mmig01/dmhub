@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:dmhub/screens/home_screen.dart';
+import 'package:dmhub/screens/before_login_screen/home_screen.dart';
 
 class GoToFirstScreenWidget extends StatelessWidget {
   const GoToFirstScreenWidget({

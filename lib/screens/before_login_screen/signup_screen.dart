@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:dmhub/screens/test.dart';
-import 'signup_screen.dart';
+import 'package:dmhub/screens/after_login_screen/homepage.dart';
+import 'login_screen.dart';
 import 'package:dmhub/widgets/go_to_first_screen_widget.dart';
 import 'package:dmhub/widgets/total_login_widget.dart';
-import 'package:dmhub/widgets/orange_rounded_text.dart';
+import 'package:dmhub/widgets/orange_rounded_button.dart';
 import 'package:dmhub/widgets/textbox_widget.dart';
 
-class Login extends StatefulWidget {
-  const Login({super.key, required this.isFirstNavigatedSocialLoginButton});
+class SignUp extends StatefulWidget {
+  const SignUp({super.key, required this.isFirstNavigatedSocialLoginButton});
 
   final bool isFirstNavigatedSocialLoginButton;
 
   @override
-  State<Login> createState() => _LoginState();
+  State<SignUp> createState() => _SignUpState();
 }
 
-class _LoginState extends State<Login> {
+class _SignUpState extends State<SignUp> {
   final String logo = 'assets/images/dk_logo.png';
   final String mainPicture = "assets/images/dm_hub.png";
   bool _loginColumnVisible = false;
@@ -25,6 +25,8 @@ class _LoginState extends State<Login> {
   // 이메일 및 비밀번호 컨트롤러
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   @override
   void initState() {
@@ -45,19 +47,26 @@ class _LoginState extends State<Login> {
     }
   }
 
-  // Firebase 로그인 메서드
-  Future<void> _loginWithEmailAndPassword() async {
+  // Firebase 회원가입 메서드
+  Future<void> _signUpWithEmailAndPassword() async {
     late String email;
     late String password;
-
+    late String confirmPassword;
     setState(() {
       email = _emailController.text;
       password = _passwordController.text;
+      confirmPassword = _confirmPasswordController.text;
     });
 
+    if (password != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Password doesn't match")),
+      );
+      return;
+    }
     try {
       final credential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: email, password: password);
+          .createUserWithEmailAndPassword(email: email, password: password);
       if (mounted && credential.user != null) {
         // 로딩 화면을 잠깐 표시
         showDialog(
@@ -71,7 +80,7 @@ class _LoginState extends State<Login> {
         );
 
         // 약간의 지연을 주고 페이지를 이동
-        await Future.delayed(const Duration(seconds: 2));
+        await Future.delayed(const Duration(seconds: 1));
 
         // 로딩 화면을 닫고 새 페이지로 이동
         if (mounted) {
@@ -79,34 +88,32 @@ class _LoginState extends State<Login> {
         }
 
         if (mounted) {
-          Navigator.push(
-            context,
-            PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) =>
-                  const AuthStateScreen(),
-              transitionDuration: const Duration(seconds: 1), // 애니메이션의 길이 설정
-              fullscreenDialog: true,
-            ),
-          );
+          if (mounted) {
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (context) => const Homepage()),
+              (Route<dynamic> route) => false, // 모든 이전 화면을 제거
+            );
+          }
         }
       }
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
+      if (e.code == 'weak-password') {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('해당 유저를 찾을 수 없습니다.')),
+            const SnackBar(content: Text('The password provided is too weak.')),
           );
         }
-      } else if (e.code == 'wrong-password') {
+      } else if (e.code == 'email-already-in-use') {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('잘못된 패스워드 입니다.')),
+            const SnackBar(
+                content: Text('The account already exists for that email.')),
           );
         }
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('유저를 찾을 수 없습니다. 다시 입력해주세요.')),
+            const SnackBar(content: Text('Invalid input')),
           );
         }
       }
@@ -127,12 +134,11 @@ class _LoginState extends State<Login> {
       backgroundColor: Theme.of(context).primaryColor,
       body: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Column(
               children: [
                 const SizedBox(
-                  height: 50,
+                  height: 30,
                 ),
                 Row(
                   children: [
@@ -177,7 +183,7 @@ class _LoginState extends State<Login> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        "Login Form",
+                        "Sign up Form",
                         style: TextStyle(
                           fontFamily: 'Outfit-Bold',
                           fontSize: 30,
@@ -199,6 +205,14 @@ class _LoginState extends State<Login> {
                         obscureText: true,
                         controller: _passwordController, // 컨트롤러 전달
                       ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      TextBoxWidget(
+                        labelText: "confirm password",
+                        obscureText: true,
+                        controller: _confirmPasswordController, // 컨트롤러 전달
+                      ),
                     ],
                   ),
                   const SizedBox(
@@ -208,7 +222,7 @@ class _LoginState extends State<Login> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Text(
-                        "Need an account?",
+                        "Have an account?",
                         style: TextStyle(
                             fontFamily: 'Outfit',
                             fontSize: 14,
@@ -224,7 +238,7 @@ class _LoginState extends State<Login> {
                             PageRouteBuilder(
                               pageBuilder:
                                   (context, animation, secondaryAnimation) =>
-                                      const SignUp(
+                                      const Login(
                                 isFirstNavigatedSocialLoginButton: false,
                               ),
                               transitionsBuilder: (context, animation,
@@ -246,7 +260,7 @@ class _LoginState extends State<Login> {
                               fullscreenDialog: true,
                             )),
                         child: const Text(
-                          "Sign up",
+                          "Log in",
                           style: TextStyle(
                             fontFamily: 'Outfit',
                             fontSize: 14,
@@ -271,10 +285,10 @@ class _LoginState extends State<Login> {
                         width: 1.0,
                       ),
                     ),
-                    child: OrangeRoundedText(
-                      text: "Log in",
-                      heroTag: "login_tag",
-                      method: _loginWithEmailAndPassword,
+                    child: OrangeRoundedButton(
+                      text: "Sign Up",
+                      heroTag: "signup_tag",
+                      method: _signUpWithEmailAndPassword,
                     ),
                   ),
                   const SizedBox(

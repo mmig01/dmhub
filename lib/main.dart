@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:dmhub/screens/home_screen.dart';
+import 'package:dmhub/screens/before_login_screen/home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:dmhub/screens/test.dart';
+import 'package:dmhub/screens/after_login_screen/homepage.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -43,7 +43,7 @@ class _MyAppState extends State<MyApp> {
       theme:
           ThemeData(primaryColor: Colors.white, fontFamily: 'Outfit-Regular'),
       home: _user != null
-          ? const AuthStateScreen()
+          ? const Homepage()
           : const HomeScreen(
               isFirstNavigated: true,
             ),

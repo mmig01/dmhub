@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:dmhub/screens/test.dart';
+import 'package:dmhub/screens/after_login_screen/homepage.dart';
 
 class GoogleLoginButton extends StatefulWidget {
   const GoogleLoginButton({super.key});
@@ -80,7 +80,7 @@ class GoogleLoginButtonState extends State<GoogleLoginButton> {
           context,
           PageRouteBuilder(
             pageBuilder: (context, animation, secondaryAnimation) =>
-                const AuthStateScreen(),
+                const Homepage(),
 
             transitionDuration: const Duration(seconds: 1), // 애니메이션의 길이 설정
             fullscreenDialog: true,

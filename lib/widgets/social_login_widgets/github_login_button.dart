@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:dmhub/screens/test.dart';
+import 'package:dmhub/screens/after_login_screen/homepage.dart';
 // AuthStateScreen을 import합니다.
 
 class GithubLoginButton extends StatefulWidget {
@@ -66,7 +66,7 @@ class GithubLoginButtonState extends State<GithubLoginButton> {
             context,
             PageRouteBuilder(
               pageBuilder: (context, animation, secondaryAnimation) =>
-                  const AuthStateScreen(),
+                  const Homepage(),
               transitionDuration: const Duration(seconds: 1), // 애니메이션의 길이 설정
               fullscreenDialog: true,
             ),

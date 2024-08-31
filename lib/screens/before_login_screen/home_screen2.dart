@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:dmhub/screens/login_screen.dart';
+import 'package:dmhub/screens/before_login_screen/login_screen.dart';
 import 'package:dmhub/widgets/go_to_first_screen_widget.dart';
 
 class HomeScreen2 extends StatefulWidget {
@@ -67,7 +67,7 @@ class _HomeScreen2State extends State<HomeScreen2>
               Column(
                 children: [
                   const SizedBox(
-                    height: 50,
+                    height: 30,
                   ),
                   Row(
                     children: [
