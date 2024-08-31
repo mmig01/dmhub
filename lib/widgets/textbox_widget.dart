@@ -5,10 +5,12 @@ class TextBoxWidget extends StatelessWidget {
     super.key,
     required this.labelText,
     required this.obscureText,
+    required this.controller,
   });
 
   final String labelText;
   final bool obscureText;
+  final TextEditingController controller; // Controller 추가
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -28,6 +30,7 @@ class TextBoxWidget extends StatelessWidget {
       ),
       child: TextField(
         obscureText: obscureText,
+        controller: controller, // Controller 연결
         decoration: InputDecoration(
           enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(

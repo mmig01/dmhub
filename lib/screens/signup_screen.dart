@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
-import 'package:phomu/screens/login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:phomu/screens/test.dart';
+import 'login_screen.dart';
 import 'package:phomu/widgets/go_to_first_screen_widget.dart';
 import 'package:phomu/widgets/total_login_widget.dart';
 import 'package:phomu/widgets/orange_rounded_text.dart';
@@ -8,7 +9,9 @@ import 'package:phomu/widgets/textbox_widget.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key, required this.isFirstNavigatedSocialLoginButton});
+
   final bool isFirstNavigatedSocialLoginButton;
+
   @override
   State<SignUp> createState() => _SignUpState();
 }
@@ -18,6 +21,13 @@ class _SignUpState extends State<SignUp> {
   final String mainPicture = "assets/images/dm_hub.png";
   bool _loginColumnVisible = false;
   bool _socialLoginColumnVisible = false;
+
+  // 이메일 및 비밀번호 컨트롤러
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -37,13 +47,95 @@ class _SignUpState extends State<SignUp> {
     }
   }
 
+  // Firebase 회원가입 메서드
+  Future<void> _signUpWithEmailAndPassword() async {
+    late String email;
+    late String password;
+    late String confirmPassword;
+    setState(() {
+      email = _emailController.text;
+      password = _passwordController.text;
+      confirmPassword = _confirmPasswordController.text;
+    });
+
+    if (password != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("비밀번호가 일치하지 않습니다.")),
+      );
+      return;
+    }
+    try {
+      final credential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      if (mounted && credential.user != null) {
+        // 로딩 화면을 잠깐 표시
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) {
+            return const Center(
+              child: CircularProgressIndicator(), // 로딩 스피너 표시
+            );
+          },
+        );
+
+        // 약간의 지연을 주고 페이지를 이동
+        await Future.delayed(const Duration(seconds: 2));
+
+        // 로딩 화면을 닫고 새 페이지로 이동
+        if (mounted) {
+          Navigator.of(context).pop(); // 로딩 화면 닫기
+        }
+
+        if (mounted) {
+          Navigator.push(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  const AuthStateScreen(),
+              transitionDuration: const Duration(seconds: 1), // 애니메이션의 길이 설정
+              fullscreenDialog: true,
+            ),
+          );
+        }
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('비밀번호가 너무 약합니다.')),
+          );
+        }
+      } else if (e.code == 'email-already-in-use') {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('이미 존재하는 이메일입니다.')),
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('유효하지 않은 입력입니다. 다시 입력해주세요.')),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString()),
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Column(
               children: [
@@ -89,51 +181,39 @@ class _SignUpState extends State<SignUp> {
               duration: const Duration(milliseconds: 1000),
               child: Column(
                 children: [
-                  // here
-                  const Column(
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         "Sign up Form",
                         style: TextStyle(
                           fontFamily: 'Outfit-Bold',
                           fontSize: 30,
                         ),
                       ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      TextBoxWidget(
-                        labelText: "name",
-                        obscureText: false,
-                      ),
-                      SizedBox(
-                        height: 20,
-                      ),
-                      TextBoxWidget(
-                        labelText: "nickname",
-                        obscureText: false,
-                      ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       TextBoxWidget(
                         labelText: "email",
                         obscureText: false,
+                        controller: _emailController, // 컨트롤러 전달
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       TextBoxWidget(
                         labelText: "password",
                         obscureText: true,
+                        controller: _passwordController, // 컨트롤러 전달
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       TextBoxWidget(
                         labelText: "confirm password",
                         obscureText: true,
+                        controller: _confirmPasswordController, // 컨트롤러 전달
                       ),
                     ],
                   ),
@@ -203,12 +283,15 @@ class _SignUpState extends State<SignUp> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(18.0),
                       border: Border.all(
-                        color: Colors.orange.withOpacity(0.1), // 테두리 색 설정
-                        width: 1.0, // 테두리 두께 설정
+                        color: Colors.orange.withOpacity(0.1),
+                        width: 1.0,
                       ),
                     ),
-                    child: const OrangeRoundedText(
-                        text: "Sign Up", heroTag: "signup_tag"),
+                    child: OrangeRoundedText(
+                      text: "Sign Up",
+                      heroTag: "signup_tag",
+                      method: _signUpWithEmailAndPassword,
+                    ),
                   ),
                   const SizedBox(
                     height: 80,

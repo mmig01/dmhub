@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
-import 'package:phomu/screens/signup_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:phomu/screens/test.dart';
+import 'signup_screen.dart';
 import 'package:phomu/widgets/go_to_first_screen_widget.dart';
 import 'package:phomu/widgets/total_login_widget.dart';
 import 'package:phomu/widgets/orange_rounded_text.dart';
@@ -10,6 +11,7 @@ class Login extends StatefulWidget {
   const Login({super.key, required this.isFirstNavigatedSocialLoginButton});
 
   final bool isFirstNavigatedSocialLoginButton;
+
   @override
   State<Login> createState() => _LoginState();
 }
@@ -19,6 +21,11 @@ class _LoginState extends State<Login> {
   final String mainPicture = "assets/images/dm_hub.png";
   bool _loginColumnVisible = false;
   bool _socialLoginColumnVisible = false;
+
+  // 이메일 및 비밀번호 컨트롤러
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -35,6 +42,82 @@ class _LoginState extends State<Login> {
       });
     } else {
       _socialLoginColumnVisible = true;
+    }
+  }
+
+  // Firebase 로그인 메서드
+  Future<void> _loginWithEmailAndPassword() async {
+    late String email;
+    late String password;
+
+    setState(() {
+      email = _emailController.text;
+      password = _passwordController.text;
+    });
+
+    try {
+      final credential = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
+      if (mounted && credential.user != null) {
+        // 로딩 화면을 잠깐 표시
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) {
+            return const Center(
+              child: CircularProgressIndicator(), // 로딩 스피너 표시
+            );
+          },
+        );
+
+        // 약간의 지연을 주고 페이지를 이동
+        await Future.delayed(const Duration(seconds: 2));
+
+        // 로딩 화면을 닫고 새 페이지로 이동
+        if (mounted) {
+          Navigator.of(context).pop(); // 로딩 화면 닫기
+        }
+
+        if (mounted) {
+          Navigator.push(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  const AuthStateScreen(),
+              transitionDuration: const Duration(seconds: 1), // 애니메이션의 길이 설정
+              fullscreenDialog: true,
+            ),
+          );
+        }
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('해당 유저를 찾을 수 없습니다.')),
+          );
+        }
+      } else if (e.code == 'wrong-password') {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('잘못된 패스워드 입니다.')),
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('유저를 찾을 수 없습니다. 다시 입력해주세요.')),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString()),
+          ),
+        );
+      }
     }
   }
 
@@ -90,30 +173,31 @@ class _LoginState extends State<Login> {
               duration: const Duration(milliseconds: 1000),
               child: Column(
                 children: [
-                  // here
-                  const Column(
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         "Login Form",
                         style: TextStyle(
                           fontFamily: 'Outfit-Bold',
                           fontSize: 30,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       TextBoxWidget(
                         labelText: "email",
                         obscureText: false,
+                        controller: _emailController, // 컨트롤러 전달
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       TextBoxWidget(
                         labelText: "password",
                         obscureText: true,
+                        controller: _passwordController, // 컨트롤러 전달
                       ),
                     ],
                   ),
@@ -183,13 +267,14 @@ class _LoginState extends State<Login> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(18.0),
                       border: Border.all(
-                        color: Colors.orange.withOpacity(0.1), // 테두리 색 설정
-                        width: 1.0, // 테두리 두께 설정
+                        color: Colors.orange.withOpacity(0.1),
+                        width: 1.0,
                       ),
                     ),
-                    child: const OrangeRoundedText(
+                    child: OrangeRoundedText(
                       text: "Log in",
                       heroTag: "login_tag",
+                      method: _loginWithEmailAndPassword,
                     ),
                   ),
                   const SizedBox(

@@ -5,10 +5,12 @@ class OrangeRoundedText extends StatelessWidget {
     super.key,
     required this.text,
     required this.heroTag,
+    required this.method,
   });
 
   final String text;
   final String heroTag;
+  final void Function() method;
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
@@ -16,7 +18,7 @@ class OrangeRoundedText extends StatelessWidget {
       backgroundColor: const Color(0xffd76833),
       splashColor: Colors.white.withOpacity(0.2),
       elevation: 2,
-      onPressed: () {},
+      onPressed: method,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
