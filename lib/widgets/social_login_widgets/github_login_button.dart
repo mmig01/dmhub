@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:phomu/screens/test.dart';
+import 'package:dmhub/screens/test.dart';
 // AuthStateScreen을 import합니다.
 
 class GithubLoginButton extends StatefulWidget {

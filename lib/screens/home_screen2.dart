@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:phomu/screens/login_screen.dart';
-import 'package:phomu/widgets/go_to_first_screen_widget.dart';
+import 'package:dmhub/screens/login_screen.dart';
+import 'package:dmhub/widgets/go_to_first_screen_widget.dart';
 
 class HomeScreen2 extends StatefulWidget {
   const HomeScreen2({super.key});

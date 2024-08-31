@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:phomu/screens/home_screen2.dart';
+import 'package:dmhub/screens/home_screen2.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({

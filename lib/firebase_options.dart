@@ -67,8 +67,9 @@ class DefaultFirebaseOptions {
     projectId: 'dmhub-ede12',
     databaseURL: 'https://dmhub-ede12-default-rtdb.firebaseio.com',
     storageBucket: 'dmhub-ede12.appspot.com',
-    iosClientId: '781469771810-81erg9bsurbko4bb79r2785vj9etacmp.apps.googleusercontent.com',
-    iosBundleId: 'com.example.phomu',
+    iosClientId:
+        '781469771810-81erg9bsurbko4bb79r2785vj9etacmp.apps.googleusercontent.com',
+    iosBundleId: 'com.example.dmhub',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -78,8 +79,9 @@ class DefaultFirebaseOptions {
     projectId: 'dmhub-ede12',
     databaseURL: 'https://dmhub-ede12-default-rtdb.firebaseio.com',
     storageBucket: 'dmhub-ede12.appspot.com',
-    iosClientId: '781469771810-81erg9bsurbko4bb79r2785vj9etacmp.apps.googleusercontent.com',
-    iosBundleId: 'com.example.phomu',
+    iosClientId:
+        '781469771810-81erg9bsurbko4bb79r2785vj9etacmp.apps.googleusercontent.com',
+    iosBundleId: 'com.example.dmhub',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
@@ -92,5 +94,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'dmhub-ede12.appspot.com',
     measurementId: 'G-0KTZ1375S2',
   );
-
 }

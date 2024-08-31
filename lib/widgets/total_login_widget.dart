@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:phomu/widgets/social_login_widgets/github_login_button.dart';
-import 'package:phomu/widgets/social_login_widgets/google_login_button.dart';
+import 'package:dmhub/widgets/social_login_widgets/github_login_button.dart';
+import 'package:dmhub/widgets/social_login_widgets/google_login_button.dart';
 
 class TotalLoginWidget extends StatelessWidget {
   const TotalLoginWidget({

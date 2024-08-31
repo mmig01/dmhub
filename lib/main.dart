@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:phomu/screens/home_screen.dart';
+import 'package:dmhub/screens/home_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:phomu/screens/test.dart';
+import 'package:dmhub/screens/test.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {

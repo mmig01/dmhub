@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:phomu/screens/test.dart';
+import 'package:dmhub/screens/test.dart';
 import 'login_screen.dart';
-import 'package:phomu/widgets/go_to_first_screen_widget.dart';
-import 'package:phomu/widgets/total_login_widget.dart';
-import 'package:phomu/widgets/orange_rounded_text.dart';
-import 'package:phomu/widgets/textbox_widget.dart';
+import 'package:dmhub/widgets/go_to_first_screen_widget.dart';
+import 'package:dmhub/widgets/total_login_widget.dart';
+import 'package:dmhub/widgets/orange_rounded_text.dart';
+import 'package:dmhub/widgets/textbox_widget.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key, required this.isFirstNavigatedSocialLoginButton});

@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "phomu" "\0"
+            VALUE "FileDescription", "dmhub" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "phomu" "\0"
+            VALUE "InternalName", "dmhub" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "phomu.exe" "\0"
-            VALUE "ProductName", "phomu" "\0"
+            VALUE "OriginalFilename", "dmhub.exe" "\0"
+            VALUE "ProductName", "dmhub" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
