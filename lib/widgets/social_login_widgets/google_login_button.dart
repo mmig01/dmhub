@@ -76,15 +76,9 @@ class GoogleLoginButtonState extends State<GoogleLoginButton> {
       }
 
       if (mounted) {
-        Navigator.push(
-          context,
-          PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) =>
-                const Homepage(),
-
-            transitionDuration: const Duration(seconds: 1), // 애니메이션의 길이 설정
-            fullscreenDialog: true,
-          ),
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const Homepage()),
+          (Route<dynamic> route) => false, // 모든 이전 화면을 제거
         );
       }
     }
