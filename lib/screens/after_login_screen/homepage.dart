@@ -33,11 +33,11 @@ class HomepageState extends State<Homepage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
         title: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
+              Column(
                 children: [
                   SizedBox(
                     height: 30,
@@ -57,8 +57,26 @@ class HomepageState extends State<Homepage> {
                           fontSize: 18,
                         ),
                       )),
-                  TextButton(onPressed: () {}, child: const Text('Docs')),
-                  TextButton(onPressed: () {}, child: const Text('API')),
+                  TextButton(
+                      onPressed: () {},
+                      child: const Text(
+                        'Docs',
+                        style: TextStyle(
+                          fontFamily: 'Outfit-Bold',
+                          color: Colors.black,
+                          fontSize: 18,
+                        ),
+                      )),
+                  TextButton(
+                      onPressed: () {},
+                      child: const Text(
+                        'API',
+                        style: TextStyle(
+                          fontFamily: 'Outfit-Bold',
+                          color: Colors.black,
+                          fontSize: 18,
+                        ),
+                      )),
                 ],
               ),
             ],
