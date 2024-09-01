@@ -33,7 +33,6 @@ class _HomeScreenState extends State<HomeScreen>
     // 위젯이 완전히 빌드된 후에 호출
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // 3초 후에 자동으로 다음 페이지로 이동
-      // 3초 후에 자동으로 다음 페이지로 이동
       Future.delayed(const Duration(milliseconds: 1800), () {
         if (mounted) {
           Navigator.push(
