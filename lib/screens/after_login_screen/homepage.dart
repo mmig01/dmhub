@@ -1,6 +1,6 @@
+import 'package:dmhub/screens/before_login_screen/home_screen2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:dmhub/screens/before_login_screen/home_screen.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -148,10 +148,7 @@ class HomepageState extends State<Homepage> {
         // 로그아웃 후 HomeScreen으로 이동
         if (mounted) {
           Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(
-                builder: (context) => const HomeScreen(
-                      isFirstNavigated: true,
-                    )),
+            MaterialPageRoute(builder: (context) => const HomeScreen2()),
             (Route<dynamic> route) => false, // 모든 이전 화면을 제거
           );
         }
