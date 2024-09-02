@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:dmhub/screens/after_login_screen/homepage.dart';
@@ -15,6 +16,7 @@ class GithubLoginButtonState extends State<GithubLoginButton> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   User? _user; // Firebase User 객체
   StreamSubscription<User?>? _authSubscription; // authStateChanges 구독
+  final FirebaseDatabase _realtime = FirebaseDatabase.instance;
 
   @override
   void initState() {
@@ -39,7 +41,19 @@ class GithubLoginButtonState extends State<GithubLoginButton> {
       GithubAuthProvider githubProvider = GithubAuthProvider();
 
       // 팝업을 통해 로그인 시도
-      await FirebaseAuth.instance.signInWithPopup(githubProvider);
+      final credential =
+          await FirebaseAuth.instance.signInWithPopup(githubProvider);
+
+      if (credential.user != null) {
+        //realtime database 에 추가
+        await _realtime
+            .ref()
+            .child("users")
+            .child(credential.user!.email!.split('@')[0])
+            .set({
+          "name": "anonymous lion",
+        });
+      }
 
       if (mounted && _user != null) {
         // 로딩 화면을 잠깐 표시

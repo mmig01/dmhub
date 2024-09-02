@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -15,6 +16,7 @@ class GoogleLoginButton extends StatefulWidget {
 class GoogleLoginButtonState extends State<GoogleLoginButton> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final FirebaseDatabase _realtime = FirebaseDatabase.instance;
 
   User? _user; // Firebase User 객체
 
@@ -51,11 +53,21 @@ class GoogleLoginButtonState extends State<GoogleLoginButton> {
         idToken: googleAuth.idToken,
       );
 
-      await _auth.signInWithCredential(credential);
+      final credentialReal = await _auth.signInWithCredential(credential);
     } catch (error) {
       print('Sign In Error: $error');
     }
 
+    if (_user != null) {
+      //realtime database 에 추가
+      await _realtime
+          .ref()
+          .child("users")
+          .child(_user!.email!.split('@')[0])
+          .set({
+        "name": "anonymous lion",
+      });
+    }
     if (mounted && _user != null) {
       // 로딩 화면을 잠깐 표시
       showDialog(
