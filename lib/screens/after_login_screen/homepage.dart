@@ -45,38 +45,52 @@ class HomepageState extends State<Homepage> {
                   ),
                 ],
               ),
-              Row(
+              Column(
                 children: [
-                  TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        'Home',
-                        style: TextStyle(
-                          fontFamily: 'Outfit-Bold',
-                          color: Colors.black,
-                          fontSize: 18,
-                        ),
-                      )),
-                  TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        'Docs',
-                        style: TextStyle(
-                          fontFamily: 'Outfit-Bold',
-                          color: Colors.black,
-                          fontSize: 18,
-                        ),
-                      )),
-                  TextButton(
-                      onPressed: () {},
-                      child: const Text(
-                        'API',
-                        style: TextStyle(
-                          fontFamily: 'Outfit-Bold',
-                          color: Colors.black,
-                          fontSize: 18,
-                        ),
-                      )),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      TextButton(
+                          onPressed: () {},
+                          child: const Text(
+                            'Home',
+                            style: TextStyle(
+                              fontFamily: 'Outfit',
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          )),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      TextButton(
+                          onPressed: () {},
+                          child: const Text(
+                            'Study',
+                            style: TextStyle(
+                              fontFamily: 'Outfit',
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          )),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      TextButton(
+                          onPressed: () {},
+                          child: const Text(
+                            'etc',
+                            style: TextStyle(
+                              fontFamily: 'Outfit',
+                              color: Colors.black,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          )),
+                    ],
+                  ),
                 ],
               ),
             ],
@@ -105,6 +119,7 @@ class HomepageState extends State<Homepage> {
                       color: Colors.black,
                       fontSize: 20,
                       fontFamily: 'Outfit-Bold',
+                      fontWeight: FontWeight.w100,
                     ),
                   ),
                 ],
@@ -113,15 +128,31 @@ class HomepageState extends State<Homepage> {
             // Drawer 아이템들
             ListTile(
               leading: const Icon(Icons.home),
-              title: const Text('Home'),
+              title: const Text(
+                'Home',
+                style: TextStyle(
+                  fontFamily: 'Outfit',
+                  color: Colors.black,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               onTap: () {
                 Navigator.pop(context);
                 // 원하는 페이지로 이동
               },
             ),
             ListTile(
-              leading: const Icon(Icons.settings),
-              title: const Text('Settings'),
+              leading: const Icon(Icons.person),
+              title: const Text(
+                'My Page',
+                style: TextStyle(
+                  fontFamily: 'Outfit',
+                  color: Colors.black,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               onTap: () {
                 Navigator.pop(context);
                 // 원하는 페이지로 이동
@@ -131,7 +162,12 @@ class HomepageState extends State<Homepage> {
               leading: const Icon(Icons.logout),
               title: const Text(
                 'Logout',
-                style: TextStyle(fontFamily: 'Outfit-Regular'),
+                style: TextStyle(
+                  fontFamily: 'Outfit',
+                  color: Colors.black,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               onTap: () {
                 _handleSignOut();
