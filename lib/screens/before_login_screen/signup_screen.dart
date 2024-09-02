@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:dmhub/screens/after_login_screen/homepage.dart';
@@ -21,6 +22,7 @@ class _SignUpState extends State<SignUp> {
   final String mainPicture = "assets/images/dm_hub.png";
   bool _loginColumnVisible = false;
   bool _socialLoginColumnVisible = false;
+  final FirebaseDatabase _realtime = FirebaseDatabase.instance;
 
   // 이메일 및 비밀번호 컨트롤러
   final TextEditingController _emailController = TextEditingController();
@@ -60,13 +62,24 @@ class _SignUpState extends State<SignUp> {
 
     if (password != confirmPassword) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Password doesn't match")),
+        const SnackBar(
+          content: Text("Password doesn't match"),
+          duration: Duration(seconds: 1),
+        ),
       );
       return;
     }
     try {
       final credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
+
+      if (credential.user != null) {
+        //realtime database 에 추가
+        await _realtime.ref().child("users").child(email.split('@')[0]).set({
+          "name": "anonymous lion",
+        });
+      }
+
       if (mounted && credential.user != null) {
         // 로딩 화면을 잠깐 표시
         showDialog(
@@ -88,32 +101,52 @@ class _SignUpState extends State<SignUp> {
         }
 
         if (mounted) {
-          if (mounted) {
-            Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (context) => const Homepage()),
-              (Route<dynamic> route) => false, // 모든 이전 화면을 제거
-            );
-          }
+          Navigator.of(context).pushAndRemoveUntil(
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  const Homepage(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: child,
+                );
+              },
+              transitionDuration:
+                  const Duration(milliseconds: 500), // 애니메이션의 길이 설정
+              reverseTransitionDuration: const Duration(milliseconds: 500),
+              fullscreenDialog: false,
+            ),
+            (Route<dynamic> route) => false, // 모든 이전 화면을 제거
+          );
         }
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('The password provided is too weak.')),
+            const SnackBar(
+              content: Text('The password provided is too weak.'),
+              duration: Duration(seconds: 1),
+            ),
           );
         }
       } else if (e.code == 'email-already-in-use') {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-                content: Text('The account already exists for that email.')),
+              content: Text('The account already exists for that email.'),
+              duration: Duration(seconds: 1),
+            ),
           );
         }
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Invalid input')),
+            const SnackBar(
+              content: Text('Invalid input'),
+              duration: Duration(seconds: 1),
+            ),
           );
         }
       }
@@ -122,6 +155,7 @@ class _SignUpState extends State<SignUp> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(e.toString()),
+            duration: const Duration(seconds: 1),
           ),
         );
       }

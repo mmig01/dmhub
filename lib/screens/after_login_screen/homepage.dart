@@ -1,5 +1,9 @@
-import 'package:dmhub/screens/before_login_screen/home_screen2.dart';
+import 'package:dmhub/models/lion_user.dart';
+import 'package:dmhub/screens/after_login_screen/my_page_screen.dart';
+import 'package:dmhub/screens/before_login_screen/login_screen.dart';
+import 'package:dmhub/widgets/total_app_bar_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class Homepage extends StatefulWidget {
@@ -11,6 +15,8 @@ class Homepage extends StatefulWidget {
 
 class HomepageState extends State<Homepage> {
   User? _user;
+  LionUser? lionUser;
+  final FirebaseDatabase _realtime = FirebaseDatabase.instance;
   final String logo = 'assets/images/dk_logo.png';
   final String mainPicture = "assets/images/dm_hub.png";
   @override
@@ -23,6 +29,16 @@ class HomepageState extends State<Homepage> {
           _user = user;
         });
       }
+      setLionUser();
+    });
+  }
+
+  Future<void> setLionUser() async {
+    DataSnapshot snapshot =
+        await _realtime.ref("users").child(_user!.email!.split('@')[0]).get();
+    Map<String, dynamic> toMap = snapshot.value as Map<String, dynamic>;
+    setState(() {
+      lionUser = LionUser.fromJson(toMap);
     });
   }
 
@@ -30,73 +46,7 @@ class HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        title: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                children: [
-                  SizedBox(
-                    height: 30,
-                    child: Image.asset(logo),
-                  ),
-                ],
-              ),
-              Column(
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      TextButton(
-                          onPressed: () {},
-                          child: const Text(
-                            'Home',
-                            style: TextStyle(
-                              fontFamily: 'Outfit',
-                              color: Colors.black,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          )),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      TextButton(
-                          onPressed: () {},
-                          child: const Text(
-                            'Study',
-                            style: TextStyle(
-                              fontFamily: 'Outfit',
-                              color: Colors.black,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          )),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      TextButton(
-                          onPressed: () {},
-                          child: const Text(
-                            'etc',
-                            style: TextStyle(
-                              fontFamily: 'Outfit',
-                              color: Colors.black,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          )),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
+      appBar: TotalAppBar(logo: logo),
       endDrawer: Drawer(
         backgroundColor: Colors.white,
         child: ListView(
@@ -109,17 +59,20 @@ class HomepageState extends State<Homepage> {
               ),
               child: Column(
                 children: [
-                  SizedBox(
-                    height: 100,
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    height: 90,
                     child: Image.asset(mainPicture),
                   ),
                   Text(
-                    '${_user?.email}',
+                    lionUser != null ? lionUser!.name : "",
                     style: const TextStyle(
                       color: Colors.black,
                       fontSize: 20,
-                      fontFamily: 'Outfit-Bold',
-                      fontWeight: FontWeight.w100,
+                      fontFamily: 'Outfit',
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ],
@@ -137,10 +90,24 @@ class HomepageState extends State<Homepage> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              onTap: () {
-                Navigator.pop(context);
-                // 원하는 페이지로 이동
-              },
+              onTap: () => Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        const Homepage(),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      return FadeTransition(
+                        opacity: animation,
+                        child: child,
+                      );
+                    },
+                    transitionDuration:
+                        const Duration(milliseconds: 500), // 애니메이션의 길이 설정
+                    reverseTransitionDuration:
+                        const Duration(milliseconds: 500),
+                    fullscreenDialog: false,
+                  )),
             ),
             ListTile(
               leading: const Icon(Icons.person),
@@ -154,8 +121,26 @@ class HomepageState extends State<Homepage> {
                 ),
               ),
               onTap: () {
-                Navigator.pop(context);
-                // 원하는 페이지로 이동
+                if (mounted) {
+                  Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            const MyPageScreen(),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          );
+                        },
+                        transitionDuration:
+                            const Duration(milliseconds: 500), // 애니메이션의 길이 설정
+                        reverseTransitionDuration:
+                            const Duration(milliseconds: 500),
+                        fullscreenDialog: false,
+                      ));
+                }
               },
             ),
             ListTile(
@@ -199,10 +184,26 @@ class HomepageState extends State<Homepage> {
           Navigator.of(context).pop(); // 로딩 화면 닫기
         }
         await FirebaseAuth.instance.signOut();
-        // 로그아웃 후 HomeScreen으로 이동
+
         if (mounted) {
           Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => const HomeScreen2()),
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  const Login(
+                isFirstNavigatedSocialLoginButton: true,
+              ),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: child,
+                );
+              },
+              transitionDuration:
+                  const Duration(milliseconds: 500), // 애니메이션의 길이 설정
+              reverseTransitionDuration: const Duration(milliseconds: 500),
+              fullscreenDialog: false,
+            ),
             (Route<dynamic> route) => false, // 모든 이전 화면을 제거
           );
         }

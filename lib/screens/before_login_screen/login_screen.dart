@@ -80,7 +80,21 @@ class _LoginState extends State<Login> {
 
         if (mounted) {
           Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => const Homepage()),
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  const Homepage(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: child,
+                );
+              },
+              transitionDuration:
+                  const Duration(milliseconds: 500), // 애니메이션의 길이 설정
+              reverseTransitionDuration: const Duration(milliseconds: 500),
+              fullscreenDialog: false,
+            ),
             (Route<dynamic> route) => false, // 모든 이전 화면을 제거
           );
         }
@@ -89,20 +103,28 @@ class _LoginState extends State<Login> {
       if (e.code == 'user-not-found') {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('No user found for that email.')),
+            const SnackBar(
+              content: Text('No user found for that email.'),
+              duration: Duration(seconds: 1),
+            ),
           );
         }
       } else if (e.code == 'wrong-password') {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-                content: Text('Wrong password provided for that user.')),
+              content: Text('Wrong password provided for that user.'),
+              duration: Duration(seconds: 1),
+            ),
           );
         }
       } else {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('No user found.')),
+            const SnackBar(
+              content: Text('No user found.'),
+              duration: Duration(seconds: 1),
+            ),
           );
         }
       }
@@ -111,6 +133,7 @@ class _LoginState extends State<Login> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(e.toString()),
+            duration: const Duration(seconds: 1),
           ),
         );
       }

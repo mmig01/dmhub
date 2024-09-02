@@ -40,6 +40,8 @@ dependencies:
   firebase_core_web: 
   firebase_database: ^10.4.0
   firebase_auth: 
+  firebase_storage:
+  image_picker_web:
   google_sign_in:
 
 
@@ -74,6 +76,7 @@ flutter:
     - assets/images/github_logo.png
     - assets/images/google_logo.png
     - assets/images/apple_logo.png
+    - assets/images/acho.png
    
 
   # An image asset can refer to one or more resolution-specific "variants", see
