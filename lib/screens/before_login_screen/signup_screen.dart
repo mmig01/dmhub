@@ -49,6 +49,16 @@ class _SignUpState extends State<SignUp> {
     }
   }
 
+  // dispose 메서드를 오버라이드하여 리소스를 정리
+  @override
+  void dispose() {
+    // 텍스트 컨트롤러 정리
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
   // Firebase 회원가입 메서드
   Future<void> _signUpWithEmailAndPassword() async {
     late String email;
@@ -63,7 +73,12 @@ class _SignUpState extends State<SignUp> {
     if (password != confirmPassword) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Password doesn't match"),
+          content: Text(
+            "비밀번호가 일치하지 않습니다.",
+            style: TextStyle(
+              fontSize: 15,
+            ),
+          ),
           duration: Duration(seconds: 1),
         ),
       );
@@ -73,6 +88,15 @@ class _SignUpState extends State<SignUp> {
       final credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
 
+      DataSnapshot snapshot =
+          await _realtime.ref().child("users").child(email.split('@')[0]).get();
+
+      if (snapshot.value == null) {
+        // 'test' 필드가 null이면 데이터를 저장
+        await _realtime.ref().child("users").child(email.split('@')[0]).set({
+          "name": email.split('@')[0],
+        });
+      }
       if (mounted && credential.user != null) {
         // 로딩 화면을 잠깐 표시
         showDialog(
@@ -119,7 +143,12 @@ class _SignUpState extends State<SignUp> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('The password provided is too weak.'),
+              content: Text(
+                '비밀번호가 너무 약합니다.',
+                style: TextStyle(
+                  fontSize: 15,
+                ),
+              ),
               duration: Duration(seconds: 1),
             ),
           );
@@ -128,7 +157,12 @@ class _SignUpState extends State<SignUp> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('The account already exists for that email.'),
+              content: Text(
+                '해당 이메일로 가입된 계정이 이미 존재합니다.',
+                style: TextStyle(
+                  fontSize: 15,
+                ),
+              ),
               duration: Duration(seconds: 1),
             ),
           );
@@ -137,7 +171,12 @@ class _SignUpState extends State<SignUp> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Invalid input'),
+              content: Text(
+                '유효하지 않은 입력입니다.',
+                style: TextStyle(
+                  fontSize: 15,
+                ),
+              ),
               duration: Duration(seconds: 1),
             ),
           );

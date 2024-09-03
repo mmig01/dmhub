@@ -1,3 +1,4 @@
+import 'dart:async'; // StreamSubscription을 사용하기 위해 추가
 import 'package:dmhub/models/lion_user.dart';
 import 'package:dmhub/screens/after_login_screen/my_page_screen.dart';
 import 'package:dmhub/screens/before_login_screen/login_screen.dart';
@@ -19,27 +20,47 @@ class HomepageState extends State<Homepage> {
   final FirebaseDatabase _realtime = FirebaseDatabase.instance;
   final String logo = 'assets/images/dk_logo.png';
   final String mainPicture = "assets/images/dm_hub.png";
+  StreamSubscription<User?>? _authSubscription; // StreamSubscription 변수 추가
   @override
   void initState() {
     super.initState();
     // 사용자의 로그인 상태를 실시간으로 감지
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
+    _authSubscription =
+        FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (mounted) {
         setState(() {
           _user = user;
         });
+        setLionUser();
       }
-      setLionUser();
     });
   }
 
   Future<void> setLionUser() async {
-    DataSnapshot snapshot =
-        await _realtime.ref("users").child(_user!.email!.split('@')[0]).get();
-    Map<String, dynamic> toMap = snapshot.value as Map<String, dynamic>;
-    setState(() {
-      lionUser = LionUser.fromJson(toMap);
-    });
+    if (_user != null && _user!.email != null) {
+      try {
+        DataSnapshot snapshot = await _realtime
+            .ref("users")
+            .child(_user!.email!.split('@')[0])
+            .get();
+
+        if (snapshot.value != null) {
+          Map<String, dynamic> toMap = snapshot.value as Map<String, dynamic>;
+          setState(() {
+            lionUser = LionUser.fromJson(toMap);
+          });
+        }
+      } catch (e) {
+        print("Error fetching data: $e");
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    // StreamSubscription 해제
+    _authSubscription?.cancel();
+    super.dispose();
   }
 
   @override
@@ -63,7 +84,7 @@ class HomepageState extends State<Homepage> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    height: 90,
+                    height: 80,
                     child: Image.asset(mainPicture),
                   ),
                   Text(
@@ -71,26 +92,28 @@ class HomepageState extends State<Homepage> {
                         ? (lionUser!.name != null
                             ? lionUser!.name!
                             : "anonymous lion")
-                        : "anonymous lion",
+                        : "",
                     style: const TextStyle(
                       color: Colors.black,
                       fontSize: 20,
-                      fontFamily: 'Outfit-Bold',
-                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Sunflower-Bold',
                     ),
+                  ),
+                  const SizedBox(
+                    height: 2,
                   ),
                   Text(
                     lionUser != null
                         ? (lionUser!.description != null
                             ? lionUser!.description!
                             : "no description")
-                        : "no description",
+                        : "",
                     style: const TextStyle(
                       color: Colors.black,
-                      fontSize: 10,
-                      fontFamily: 'Outfit',
-                      fontWeight: FontWeight.w400,
+                      fontSize: 13,
+                      fontFamily: 'Sunflower-Light',
                     ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
@@ -101,10 +124,9 @@ class HomepageState extends State<Homepage> {
               title: const Text(
                 'Home',
                 style: TextStyle(
-                  fontFamily: 'Outfit',
+                  fontFamily: 'Sunflower-Light',
                   color: Colors.black,
                   fontSize: 18,
-                  fontWeight: FontWeight.w600,
                 ),
               ),
               onTap: () => Navigator.push(
@@ -126,49 +148,54 @@ class HomepageState extends State<Homepage> {
                     fullscreenDialog: false,
                   )),
             ),
+            const SizedBox(
+              height: 10,
+            ),
             ListTile(
               leading: const Icon(Icons.person),
               title: const Text(
                 'My Page',
                 style: TextStyle(
-                  fontFamily: 'Outfit',
+                  fontFamily: 'Sunflower-Light',
                   color: Colors.black,
                   fontSize: 18,
-                  fontWeight: FontWeight.w600,
                 ),
               ),
               onTap: () {
                 if (mounted) {
-                  Navigator.push(
-                      context,
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation, secondaryAnimation) =>
-                            const MyPageScreen(),
-                        transitionsBuilder:
-                            (context, animation, secondaryAnimation, child) {
-                          return FadeTransition(
-                            opacity: animation,
-                            child: child,
-                          );
-                        },
-                        transitionDuration:
-                            const Duration(milliseconds: 500), // 애니메이션의 길이 설정
-                        reverseTransitionDuration:
-                            const Duration(milliseconds: 500),
-                        fullscreenDialog: false,
-                      ));
+                  Navigator.of(context).pushAndRemoveUntil(
+                    PageRouteBuilder(
+                      pageBuilder: (context, animation, secondaryAnimation) =>
+                          const MyPageScreen(),
+                      transitionsBuilder:
+                          (context, animation, secondaryAnimation, child) {
+                        return FadeTransition(
+                          opacity: animation,
+                          child: child,
+                        );
+                      },
+                      transitionDuration:
+                          const Duration(milliseconds: 500), // 애니메이션의 길이 설정
+                      reverseTransitionDuration:
+                          const Duration(milliseconds: 500),
+                      fullscreenDialog: false,
+                    ),
+                    (Route<dynamic> route) => false, // 모든 이전 화면을 제거
+                  );
                 }
               },
+            ),
+            const SizedBox(
+              height: 10,
             ),
             ListTile(
               leading: const Icon(Icons.logout),
               title: const Text(
                 'Logout',
                 style: TextStyle(
-                  fontFamily: 'Outfit',
+                  fontFamily: 'Sunflower-Light',
                   color: Colors.black,
                   fontSize: 18,
-                  fontWeight: FontWeight.w600,
                 ),
               ),
               onTap: () {
@@ -187,20 +214,23 @@ class HomepageState extends State<Homepage> {
   Future<CircularProgressIndicator> _handleSignOut() async {
     try {
       if (mounted) {
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) {
-            return const Center(
-              child: CircularProgressIndicator(), // 로딩 스피너 표시
-            );
-          },
-        );
+        if (mounted) {
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) {
+              return const Center(
+                child: CircularProgressIndicator(), // 로딩 스피너 표시
+              );
+            },
+          );
+        }
+
         await Future.delayed(const Duration(milliseconds: 500));
         if (mounted) {
           Navigator.of(context).pop(); // 로딩 화면 닫기
+          await FirebaseAuth.instance.signOut();
         }
-        await FirebaseAuth.instance.signOut();
 
         if (mounted) {
           Navigator.of(context).pushAndRemoveUntil(

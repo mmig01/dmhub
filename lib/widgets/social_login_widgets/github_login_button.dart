@@ -17,7 +17,6 @@ class GithubLoginButtonState extends State<GithubLoginButton> {
   User? _user; // Firebase User 객체
   StreamSubscription<User?>? _authSubscription; // authStateChanges 구독
   final FirebaseDatabase _realtime = FirebaseDatabase.instance;
-
   @override
   void initState() {
     super.initState();
@@ -45,16 +44,34 @@ class GithubLoginButtonState extends State<GithubLoginButton> {
       await FirebaseAuth.instance.signInWithPopup(githubProvider);
 
       if (mounted && _user != null) {
+        DataSnapshot snapshot = await _realtime
+            .ref()
+            .child("users")
+            .child("${_user!.email}".split('@')[0])
+            .get();
+
+        if (snapshot.value == null) {
+          // 'test' 필드가 null이면 데이터를 저장
+          await _realtime
+              .ref()
+              .child("users")
+              .child("${_user!.email}".split('@')[0])
+              .set({
+            "name": "${_user!.email}".split('@')[0],
+          });
+        }
         // 로딩 화면을 잠깐 표시
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (context) {
-            return const Center(
-              child: CircularProgressIndicator(), // 로딩 스피너 표시
-            );
-          },
-        );
+        if (mounted) {
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) {
+              return const Center(
+                child: CircularProgressIndicator(), // 로딩 스피너 표시
+              );
+            },
+          );
+        }
 
         // 약간의 지연을 주고 페이지를 이동
         await Future.delayed(const Duration(seconds: 2));
@@ -73,9 +90,33 @@ class GithubLoginButtonState extends State<GithubLoginButton> {
       }
     } catch (e) {
       if (e is FirebaseAuthException && e.code == 'cancelled-popup-request') {
-        print('팝업이 이미 열려 있거나 취소되었습니다.');
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                '팝업이 이미 열려있거나 취소 되었습니다.',
+                style: TextStyle(
+                  fontSize: 15,
+                ),
+              ),
+              duration: Duration(seconds: 1),
+            ),
+          );
+        }
       } else {
-        print('Sign In Error: $e');
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text(
+                '오류입니다..',
+                style: TextStyle(
+                  fontSize: 15,
+                ),
+              ),
+              duration: Duration(seconds: 1),
+            ),
+          );
+        }
       }
       // 추가적인 에러 처리를 여기에 할 수 있습니다. 예를 들어, 사용자에게 알림을 표시할 수 있습니다.
     }

@@ -55,20 +55,51 @@ class GoogleLoginButtonState extends State<GoogleLoginButton> {
 
       await _auth.signInWithCredential(credential);
     } catch (error) {
-      print('Sign In Error: $error');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              '로그인 취소',
+              style: TextStyle(
+                fontSize: 15,
+              ),
+            ),
+            duration: Duration(seconds: 1),
+          ),
+        );
+      }
     }
 
     if (mounted && _user != null) {
+      DataSnapshot snapshot = await _realtime
+          .ref()
+          .child("users")
+          .child("${_user!.email}".split('@')[0])
+          .get();
+
+      if (snapshot.value == null) {
+        // 'test' 필드가 null이면 데이터를 저장
+        await _realtime
+            .ref()
+            .child("users")
+            .child("${_user!.email}".split('@')[0])
+            .set({
+          "name": "${_user!.email}".split('@')[0],
+        });
+      }
       // 로딩 화면을 잠깐 표시
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) {
-          return const Center(
-            child: CircularProgressIndicator(), // 로딩 스피너 표시
-          );
-        },
-      );
+      if (mounted) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) {
+            return const Center(
+              child: CircularProgressIndicator(), // 로딩 스피너 표시
+            );
+          },
+        );
+      }
+
       // 약간의 지연을 주고 페이지를 이동
       await Future.delayed(const Duration(seconds: 2));
 

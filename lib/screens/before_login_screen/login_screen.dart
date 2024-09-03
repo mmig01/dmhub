@@ -104,7 +104,12 @@ class _LoginState extends State<Login> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('No user found for that email.'),
+              content: Text(
+                '유저를 찾을 수 없습니다.',
+                style: TextStyle(
+                  fontSize: 15,
+                ),
+              ),
               duration: Duration(seconds: 1),
             ),
           );
@@ -113,7 +118,12 @@ class _LoginState extends State<Login> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Wrong password provided for that user.'),
+              content: Text(
+                '잘못된 비밀번호 입니다.',
+                style: TextStyle(
+                  fontSize: 15,
+                ),
+              ),
               duration: Duration(seconds: 1),
             ),
           );
@@ -122,7 +132,12 @@ class _LoginState extends State<Login> {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('No user found.'),
+              content: Text(
+                '유저를 찾을 수 없습니다.',
+                style: TextStyle(
+                  fontSize: 15,
+                ),
+              ),
               duration: Duration(seconds: 1),
             ),
           );

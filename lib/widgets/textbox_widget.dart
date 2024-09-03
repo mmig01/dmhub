@@ -53,7 +53,7 @@ class TextBoxWidget extends StatelessWidget {
           border: const OutlineInputBorder(),
           labelText: labelText,
           labelStyle: const TextStyle(
-            fontFamily: 'Outfit-Regular',
+            fontFamily: 'Sunflower-Light',
             color: Colors.black,
             fontSize: 17,
           ),

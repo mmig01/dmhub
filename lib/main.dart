@@ -41,7 +41,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme:
-          ThemeData(primaryColor: Colors.white, fontFamily: 'Outfit-Regular'),
+          ThemeData(primaryColor: Colors.white, fontFamily: 'Sunflower-Light'),
       home: _user != null
           ? const Homepage()
           : const HomeScreen(

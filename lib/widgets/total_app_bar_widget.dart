@@ -13,7 +13,8 @@ class TotalAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Colors.transparent, // AppBar를 투명하게 설정
+      scrolledUnderElevation: 0,
       title: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: Row(
