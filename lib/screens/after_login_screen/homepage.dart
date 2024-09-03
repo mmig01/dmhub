@@ -2,6 +2,7 @@ import 'dart:async'; // StreamSubscription을 사용하기 위해 추가
 import 'package:dmhub/models/lion_user_model.dart';
 import 'package:dmhub/screens/after_login_screen/my_page_screen.dart';
 import 'package:dmhub/screens/before_login_screen/login_screen.dart';
+import 'package:dmhub/widgets/lion_user_info.dart';
 import 'package:dmhub/widgets/total_app_bar_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -236,146 +237,7 @@ class HomepageState extends State<Homepage> {
                   const SizedBox(
                     height: 100,
                   ),
-                  Expanded(
-                      child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: snapshot.data!.length,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
-                    itemBuilder: (context, index) {
-                      var user = snapshot.data![index];
-                      return Column(
-                        children: [
-                          Hero(
-                            tag: user.name!,
-                            child: Container(
-                              width: 250,
-                              clipBehavior: Clip.hardEdge,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(15),
-                                boxShadow: [
-                                  BoxShadow(
-                                    blurRadius: 5,
-                                    offset: const Offset(8, 8),
-                                    color: Colors.black.withOpacity(0.3),
-                                  )
-                                ],
-                              ),
-                              child: Container(
-                                width: 250,
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).primaryColor, // 배경색
-                                  borderRadius:
-                                      BorderRadius.circular(8.0), // 테두리 모서리 둥글게
-                                  boxShadow: [
-                                    BoxShadow(
-                                      blurRadius: 5,
-                                      offset: const Offset(3, 3),
-                                      color: Colors.black.withOpacity(0.3),
-                                    )
-                                  ],
-                                ),
-                                child: Column(
-                                  children: [
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        clipBehavior: Clip.hardEdge,
-                                        decoration: const BoxDecoration(
-                                          shape: BoxShape.circle,
-                                        ),
-                                        height: 200,
-                                        child: user.image != null
-                                            ? Container(
-                                                width: double.infinity,
-                                                height: double.infinity,
-                                                decoration: BoxDecoration(
-                                                  image: DecorationImage(
-                                                    image: NetworkImage(user
-                                                        .image!), // 배경 이미지 경로
-                                                    fit: BoxFit.cover,
-                                                  ),
-                                                ),
-                                              )
-                                            : Image.asset(mainPicture)),
-                                    const SizedBox(
-                                      height: 30,
-                                    ),
-                                    Text(
-                                      user.name != null
-                                          ? user.name!
-                                          : "anonymous lion",
-                                      style: const TextStyle(
-                                        fontFamily: 'Sunflower-Bold',
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 25,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: Text(
-                                        user.description != null
-                                            ? user.description!
-                                            : "no description",
-                                        style: const TextStyle(
-                                          fontFamily: 'Sunflower-Light',
-                                          fontSize: 15,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      height: 3,
-                                    ),
-                                    Text(
-                                      user.track != null
-                                          ? user.track!
-                                          : "no track",
-                                      style: TextStyle(
-                                          fontFamily: 'Sunflower-Light',
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.blue.withOpacity(0.9)),
-                                    ),
-                                    const SizedBox(
-                                      height: 2,
-                                    ),
-                                    Text(
-                                      user.mbti != null
-                                          ? user.mbti!
-                                          : "no mbti",
-                                      style: TextStyle(
-                                          fontFamily: 'Sunflower-Light',
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 15,
-                                          color: const Color.fromARGB(
-                                                  255, 233, 113, 153)
-                                              .withOpacity(0.9)),
-                                    ),
-                                    const SizedBox(
-                                      height: 30,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                        ],
-                      );
-                    },
-                    separatorBuilder: (context, index) => const SizedBox(
-                      width: 50,
-                    ),
-                  ))
+                  Expanded(child: userInfoList(snapshot))
                 ],
               );
             }
@@ -384,6 +246,21 @@ class HomepageState extends State<Homepage> {
             );
           },
         ));
+  }
+
+  ListView userInfoList(AsyncSnapshot<List<LionUserModel>> snapshot) {
+    return ListView.separated(
+      scrollDirection: Axis.horizontal,
+      itemCount: snapshot.data!.length,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      itemBuilder: (context, index) {
+        var user = snapshot.data![index];
+        return LionUserInfo(user: user, mainPicture: mainPicture);
+      },
+      separatorBuilder: (context, index) => const SizedBox(
+        width: 50,
+      ),
+    );
   }
 
   Future<CircularProgressIndicator> _handleSignOut() async {

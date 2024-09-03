@@ -43,6 +43,7 @@ dependencies:
   firebase_storage:
   image_picker_web:
   google_sign_in:
+  shared_preferences:
 
 
 dev_dependencies:
