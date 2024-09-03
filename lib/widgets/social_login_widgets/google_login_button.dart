@@ -53,21 +53,11 @@ class GoogleLoginButtonState extends State<GoogleLoginButton> {
         idToken: googleAuth.idToken,
       );
 
-      final credentialReal = await _auth.signInWithCredential(credential);
+      await _auth.signInWithCredential(credential);
     } catch (error) {
       print('Sign In Error: $error');
     }
 
-    if (_user != null) {
-      //realtime database 에 추가
-      await _realtime
-          .ref()
-          .child("users")
-          .child(_user!.email!.split('@')[0])
-          .set({
-        "name": "anonymous lion",
-      });
-    }
     if (mounted && _user != null) {
       // 로딩 화면을 잠깐 표시
       showDialog(

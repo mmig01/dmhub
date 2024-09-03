@@ -1,5 +1,5 @@
 class LionUser {
-  final String name;
+  final String? name;
   final String? description, mbti, track, photo, background;
 
   LionUser(this.photo, this.background,

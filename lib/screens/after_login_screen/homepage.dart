@@ -67,12 +67,29 @@ class HomepageState extends State<Homepage> {
                     child: Image.asset(mainPicture),
                   ),
                   Text(
-                    lionUser != null ? lionUser!.name : "",
+                    lionUser != null
+                        ? (lionUser!.name != null
+                            ? lionUser!.name!
+                            : "anonymous lion")
+                        : "anonymous lion",
                     style: const TextStyle(
                       color: Colors.black,
                       fontSize: 20,
-                      fontFamily: 'Outfit',
+                      fontFamily: 'Outfit-Bold',
                       fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Text(
+                    lionUser != null
+                        ? (lionUser!.description != null
+                            ? lionUser!.description!
+                            : "no description")
+                        : "no description",
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 10,
+                      fontFamily: 'Outfit',
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
                 ],

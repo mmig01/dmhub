@@ -73,13 +73,6 @@ class _SignUpState extends State<SignUp> {
       final credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
 
-      if (credential.user != null) {
-        //realtime database 에 추가
-        await _realtime.ref().child("users").child(email.split('@')[0]).set({
-          "name": "anonymous lion",
-        });
-      }
-
       if (mounted && credential.user != null) {
         // 로딩 화면을 잠깐 표시
         showDialog(

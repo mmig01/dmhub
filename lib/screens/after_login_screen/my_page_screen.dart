@@ -159,7 +159,11 @@ class _MyPageScreenState extends State<MyPageScreen> {
                       child: Image.asset(mainPicture),
                     ),
                     Text(
-                      lionUser != null ? lionUser!.name : "",
+                      lionUser != null
+                          ? (lionUser!.name != null
+                              ? lionUser!.name!
+                              : "anonymous lion")
+                          : "anonymous lion",
                       style: const TextStyle(
                         fontFamily: 'Outfit-Bold',
                         fontWeight: FontWeight.w600,
@@ -177,7 +181,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                           : "no description",
                       style: const TextStyle(
                         fontFamily: 'Outfit',
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w400,
                         fontSize: 15,
                       ),
                     ),
@@ -271,7 +275,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                       height: 30,
                     ),
                     Container(
-                      width: 180,
+                      width: 150,
                       height: 50,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(18.0),

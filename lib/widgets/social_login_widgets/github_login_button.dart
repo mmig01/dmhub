@@ -41,19 +41,8 @@ class GithubLoginButtonState extends State<GithubLoginButton> {
       GithubAuthProvider githubProvider = GithubAuthProvider();
 
       // 팝업을 통해 로그인 시도
-      final credential =
-          await FirebaseAuth.instance.signInWithPopup(githubProvider);
 
-      if (credential.user != null) {
-        //realtime database 에 추가
-        await _realtime
-            .ref()
-            .child("users")
-            .child(credential.user!.email!.split('@')[0])
-            .set({
-          "name": "anonymous lion",
-        });
-      }
+      await FirebaseAuth.instance.signInWithPopup(githubProvider);
 
       if (mounted && _user != null) {
         // 로딩 화면을 잠깐 표시
