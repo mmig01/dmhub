@@ -168,38 +168,7 @@ class HomepageState extends State<Homepage> {
                 ),
               ),
               // Drawer 아이템들
-              ListTile(
-                leading: const Icon(Icons.home),
-                title: const Text(
-                  'Home',
-                  style: TextStyle(
-                    fontFamily: 'Sunflower-Light',
-                    color: Colors.black,
-                    fontSize: 18,
-                  ),
-                ),
-                onTap: () => Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder: (context, animation, secondaryAnimation) =>
-                          const Homepage(),
-                      transitionsBuilder:
-                          (context, animation, secondaryAnimation, child) {
-                        return FadeTransition(
-                          opacity: animation,
-                          child: child,
-                        );
-                      },
-                      transitionDuration:
-                          const Duration(milliseconds: 500), // 애니메이션의 길이 설정
-                      reverseTransitionDuration:
-                          const Duration(milliseconds: 500),
-                      fullscreenDialog: false,
-                    )),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
+
               ListTile(
                 leading: const Icon(Icons.person),
                 title: const Text(
@@ -254,46 +223,53 @@ class HomepageState extends State<Homepage> {
             ],
           ),
         ),
-        body: FutureBuilder(
-          future: users,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return Column(
-                children: [
-                  const SizedBox(
-                    height: 100,
-                  ),
-                  Expanded(child: userInfoList(snapshot)), // 하단에 Slider 추가
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Slider(
-                      value: _sliderValue,
-                      thumbColor: Colors.orange,
-                      activeColor: Colors.orange.withOpacity(0.5),
-                      min: 0,
-                      max: 100,
-                      label: _sliderValue.round().toString(),
-                      onChanged: (value) {
-                        setState(() {
-                          _sliderValue = value;
-                        });
-                        _onSliderChanged(value);
-                      },
+        body: SingleChildScrollView(
+          child: FutureBuilder(
+            future: users,
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Column(
+                  children: [
+                    const SizedBox(
+                      height: 100,
                     ),
-                  ),
-                  // 끝으로 이동하는 버튼 추가
-                ],
+                    SizedBox(
+                      width: 2000,
+                      height: 530,
+                      child: userInfoList(snapshot),
+                    ), // 하단에 Slider 추가
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Slider(
+                        value: _sliderValue,
+                        thumbColor: Colors.orange,
+                        activeColor: Colors.orange.withOpacity(0.5),
+                        min: 0,
+                        max: 100,
+                        label: _sliderValue.round().toString(),
+                        onChanged: (value) {
+                          setState(() {
+                            _sliderValue = value;
+                          });
+                          _onSliderChanged(value);
+                        },
+                      ),
+                    ),
+                    // 끝으로 이동하는 버튼 추가
+                  ],
+                );
+              }
+              return const Center(
+                child: CircularProgressIndicator(),
               );
-            }
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          },
+            },
+          ),
         ));
   }
 
   ListView userInfoList(AsyncSnapshot<List<LionUserModel>> snapshot) {
     return ListView.separated(
+      shrinkWrap: true,
       controller: _scrollController, // ScrollController 추가
       scrollDirection: Axis.horizontal,
       itemCount: snapshot.data!.length,
@@ -303,7 +279,7 @@ class HomepageState extends State<Homepage> {
         return LionUserInfo(user: user, mainPicture: mainPicture);
       },
       separatorBuilder: (context, index) => const SizedBox(
-        width: 50,
+        width: 60,
       ),
     );
   }
