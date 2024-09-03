@@ -19,11 +19,11 @@ class StudyScreen extends StatelessWidget {
             height: 20,
           ),
           const Text(
-            "sorry, It's in development.",
+            "개발 중입니다",
             style: TextStyle(
-              fontFamily: 'Outfit',
+              fontFamily: 'Sunflower-Light',
               fontSize: 25,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w400,
             ),
           ),
         ],

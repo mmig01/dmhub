@@ -24,6 +24,9 @@ class HomepageState extends State<Homepage> {
   final String logo = 'assets/images/dk_logo.png';
   final String mainPicture = "assets/images/dm_hub.png";
   StreamSubscription<User?>? _authSubscription; // StreamSubscription 변수 추가
+  // ScrollController 추가
+  final ScrollController _scrollController = ScrollController();
+  double _sliderValue = 0;
   @override
   void initState() {
     super.initState();
@@ -38,6 +41,29 @@ class HomepageState extends State<Homepage> {
         });
       }
     });
+
+    // ScrollController의 변화에 따른 Slider 값 업데이트
+    _scrollController.addListener(() {
+      if (_scrollController.hasClients) {
+        final double maxScrollExtent =
+            _scrollController.position.maxScrollExtent;
+        final double currentScrollPosition = _scrollController.position.pixels;
+
+        setState(() {
+          _sliderValue = (currentScrollPosition / maxScrollExtent) * 100;
+        });
+      }
+    });
+  }
+
+// Slider 값이 변경될 때 호출되는 함수
+  void _onSliderChanged(double value) {
+    final double maxScrollExtent = _scrollController.position.maxScrollExtent;
+
+    // Slider의 값을 스크롤 위치로 변환하여 스크롤
+    _scrollController.jumpTo(
+      (value / 100) * maxScrollExtent,
+    );
   }
 
   Future<List<LionUserModel>> setUsers() async {
@@ -77,6 +103,7 @@ class HomepageState extends State<Homepage> {
   void dispose() {
     // StreamSubscription 해제
     _authSubscription?.cancel();
+    _scrollController.dispose(); // ScrollController 해제
     super.dispose();
   }
 
@@ -237,7 +264,25 @@ class HomepageState extends State<Homepage> {
                   const SizedBox(
                     height: 100,
                   ),
-                  Expanded(child: userInfoList(snapshot))
+                  Expanded(child: userInfoList(snapshot)), // 하단에 Slider 추가
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Slider(
+                      value: _sliderValue,
+                      thumbColor: Colors.orange,
+                      activeColor: Colors.orange.withOpacity(0.5),
+                      min: 0,
+                      max: 100,
+                      label: _sliderValue.round().toString(),
+                      onChanged: (value) {
+                        setState(() {
+                          _sliderValue = value;
+                        });
+                        _onSliderChanged(value);
+                      },
+                    ),
+                  ),
+                  // 끝으로 이동하는 버튼 추가
                 ],
               );
             }
@@ -250,6 +295,7 @@ class HomepageState extends State<Homepage> {
 
   ListView userInfoList(AsyncSnapshot<List<LionUserModel>> snapshot) {
     return ListView.separated(
+      controller: _scrollController, // ScrollController 추가
       scrollDirection: Axis.horizontal,
       itemCount: snapshot.data!.length,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
