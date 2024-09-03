@@ -83,7 +83,21 @@ class GithubLoginButtonState extends State<GithubLoginButton> {
 
         if (mounted) {
           Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => const Homepage()),
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  const Homepage(),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: child,
+                );
+              },
+              transitionDuration:
+                  const Duration(milliseconds: 500), // 애니메이션의 길이 설정
+              reverseTransitionDuration: const Duration(milliseconds: 500),
+              fullscreenDialog: false,
+            ),
             (Route<dynamic> route) => false, // 모든 이전 화면을 제거
           );
         }
