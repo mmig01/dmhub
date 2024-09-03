@@ -427,6 +427,9 @@ class _MyPageScreenState extends State<MyPageScreen> {
                         method: changeInfo,
                       ),
                     ),
+                    const SizedBox(
+                      height: 50,
+                    ),
                   ],
                 ),
               ],
