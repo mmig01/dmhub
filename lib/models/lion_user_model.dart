@@ -1,17 +1,16 @@
-class LionUser {
+class LionUserModel {
   final String? name;
-  final String? description, mbti, track, photo, background;
+  final String? description, mbti, track, image;
 
-  LionUser(this.photo, this.background,
+  LionUserModel(this.image,
       {required this.name,
       required this.description,
       required this.mbti,
       required this.track});
-  LionUser.fromJson(Map<String, dynamic> json)
+  LionUserModel.fromJson(Map<String, dynamic> json)
       : name = json['name'],
         description = json['description'],
         mbti = json['mbti'],
         track = json['track'],
-        photo = json['photo'],
-        background = json['background'];
+        image = json['image'];
 }
