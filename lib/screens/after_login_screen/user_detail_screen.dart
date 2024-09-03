@@ -1,6 +1,7 @@
 import 'package:dmhub/models/lion_user_model.dart';
 import 'package:dmhub/widgets/total_app_bar_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserDetailScreen extends StatefulWidget {
   const UserDetailScreen(
@@ -14,16 +15,52 @@ class UserDetailScreen extends StatefulWidget {
 class _UserDetailScreenState extends State<UserDetailScreen> {
   final String logo = 'assets/images/dk_logo.png';
 
+  late SharedPreferences prefs;
+  bool isLiked = false;
+
+  Future initPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+    final likes = prefs.getStringList('likes');
+    if (likes != null) {
+      if (likes.contains(widget.user.email)) {
+        setState(() {
+          isLiked = true;
+        });
+      }
+    } else {
+      await prefs.setStringList('likes', []);
+    }
+  }
+
+  void onHeartTap() async {
+    final likes = prefs.getStringList('likes');
+    if (likes != null) {
+      if (isLiked) {
+        likes.remove(widget.user.email);
+      } else {
+        likes.add(widget.user.email!);
+      }
+      await prefs.setStringList('likes', likes);
+      setState(() {
+        isLiked = !isLiked;
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    initPrefs();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
-      appBar: TotalAppBar(logo: logo),
+      appBar: TotalAppBar(
+        logo: logo,
+      ),
+
       extendBodyBehindAppBar: true, // AppBar 뒤로 내용 연장,
       body: SingleChildScrollView(
         child: Column(
@@ -139,8 +176,22 @@ class _UserDetailScreenState extends State<UserDetailScreen> {
                                     .withOpacity(0.9)),
                           ),
                           const SizedBox(
-                            height: 30,
+                            height: 10,
                           ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                IconButton(
+                                  onPressed: onHeartTap,
+                                  icon: Icon(isLiked
+                                      ? Icons.favorite
+                                      : Icons.favorite_outline),
+                                ),
+                              ],
+                            ),
+                          )
                         ],
                       ),
                     ),

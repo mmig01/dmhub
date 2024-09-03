@@ -58,6 +58,7 @@ class GithubLoginButtonState extends State<GithubLoginButton> {
               .child("${_user!.email}".split('@')[0])
               .set({
             "name": "${_user!.email}".split('@')[0],
+            "email": _user!.email
           });
         }
         // 로딩 화면을 잠깐 표시

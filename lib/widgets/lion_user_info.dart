@@ -1,8 +1,9 @@
 import 'package:dmhub/models/lion_user_model.dart';
 import 'package:dmhub/screens/after_login_screen/user_detail_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class LionUserInfo extends StatelessWidget {
+class LionUserInfo extends StatefulWidget {
   const LionUserInfo({
     super.key,
     required this.user,
@@ -13,28 +14,75 @@ class LionUserInfo extends StatelessWidget {
   final String mainPicture;
 
   @override
+  State<LionUserInfo> createState() => _LionUserInfoState();
+}
+
+class _LionUserInfoState extends State<LionUserInfo> {
+  late SharedPreferences prefs;
+  bool isLiked = false;
+
+  @override
+  void initState() {
+    super.initState();
+    initPrefs();
+  }
+
+  Future initPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+    final likes = prefs.getStringList('likes');
+    if (likes != null) {
+      if (likes.contains(widget.user.email)) {
+        setState(() {
+          isLiked = true;
+        });
+      }
+    } else {
+      await prefs.setStringList('likes', []);
+    }
+  }
+
+  void onHeartTap() async {
+    final likes = prefs.getStringList('likes');
+    if (likes != null) {
+      if (isLiked) {
+        likes.remove(widget.user.email);
+      } else {
+        likes.add(widget.user.email!);
+      }
+      await prefs.setStringList('likes', likes);
+      setState(() {
+        isLiked = !isLiked;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.push(
-          context,
-          PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) =>
-                UserDetailScreen(
-              user: user,
-              mainPicture: mainPicture,
-            ),
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) {
-              return FadeTransition(
-                opacity: animation,
-                child: child,
-              );
-            },
-            transitionDuration:
-                const Duration(milliseconds: 700), // 애니메이션의 길이 설정
-            reverseTransitionDuration: const Duration(milliseconds: 700),
-            fullscreenDialog: false,
-          )),
+      onTap: () {
+        if (mounted) {
+          Navigator.of(context).pushAndRemoveUntil(
+              PageRouteBuilder(
+                pageBuilder: (context, animation, secondaryAnimation) =>
+                    UserDetailScreen(
+                  user: widget.user,
+                  mainPicture: widget.mainPicture,
+                ),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                  return FadeTransition(
+                    opacity: animation,
+                    child: child,
+                  );
+                },
+                transitionDuration:
+                    const Duration(milliseconds: 700), // 애니메이션의 길이 설정
+                reverseTransitionDuration: const Duration(milliseconds: 700),
+                fullscreenDialog: false,
+              ),
+              (Route<dynamic> route) => false); // 모든 이전 화면을 제
+        }
+      },
       child: Column(
         children: [
           Container(
@@ -69,7 +117,7 @@ class LionUserInfo extends StatelessWidget {
                     height: 20,
                   ),
                   Hero(
-                    tag: user.name!,
+                    tag: widget.user.name!,
                     child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         clipBehavior: Clip.hardEdge,
@@ -77,25 +125,27 @@ class LionUserInfo extends StatelessWidget {
                           shape: BoxShape.circle,
                         ),
                         height: 200,
-                        child: user.image != null
+                        child: widget.user.image != null
                             ? Container(
                                 width: double.infinity,
                                 height: double.infinity,
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
-                                    image:
-                                        NetworkImage(user.image!), // 배경 이미지 경로
+                                    image: NetworkImage(
+                                        widget.user.image!), // 배경 이미지 경로
                                     fit: BoxFit.cover,
                                   ),
                                 ),
                               )
-                            : Image.asset(mainPicture)),
+                            : Image.asset(widget.mainPicture)),
                   ),
                   const SizedBox(
                     height: 30,
                   ),
                   Text(
-                    user.name != null ? user.name! : "anonymous lion",
+                    widget.user.name != null
+                        ? widget.user.name!
+                        : "anonymous lion",
                     style: const TextStyle(
                       fontFamily: 'Sunflower-Bold',
                       fontWeight: FontWeight.w600,
@@ -108,8 +158,8 @@ class LionUserInfo extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: Text(
-                      user.description != null
-                          ? user.description!
+                      widget.user.description != null
+                          ? widget.user.description!
                           : "no description",
                       style: const TextStyle(
                         fontFamily: 'Sunflower-Light',
@@ -122,7 +172,7 @@ class LionUserInfo extends StatelessWidget {
                     height: 3,
                   ),
                   Text(
-                    user.track != null ? user.track! : "no track",
+                    widget.user.track != null ? widget.user.track! : "no track",
                     style: TextStyle(
                         fontFamily: 'Sunflower-Light',
                         fontSize: 15,
@@ -133,7 +183,7 @@ class LionUserInfo extends StatelessWidget {
                     height: 2,
                   ),
                   Text(
-                    user.mbti != null ? user.mbti! : "no mbti",
+                    widget.user.mbti != null ? widget.user.mbti! : "no mbti",
                     style: TextStyle(
                         fontFamily: 'Sunflower-Light',
                         fontWeight: FontWeight.w600,
@@ -144,6 +194,20 @@ class LionUserInfo extends StatelessWidget {
                   const SizedBox(
                     height: 30,
                   ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                          onPressed: onHeartTap,
+                          icon: Icon(isLiked
+                              ? Icons.favorite
+                              : Icons.favorite_outline),
+                        ),
+                      ],
+                    ),
+                  )
                 ],
               ),
             ),

@@ -19,14 +19,13 @@ class HomepageState extends State<Homepage> {
   User? _user;
   LionUserModel? lionUserModel;
   Future<List<LionUserModel>>? users;
-
   final FirebaseDatabase _realtime = FirebaseDatabase.instance;
   final String logo = 'assets/images/dk_logo.png';
   final String mainPicture = "assets/images/dm_hub.png";
-  StreamSubscription<User?>? _authSubscription; // StreamSubscription 변수 추가
-  // ScrollController 추가
+  StreamSubscription<User?>? _authSubscription;
   final ScrollController _scrollController = ScrollController();
   double _sliderValue = 0;
+
   @override
   void initState() {
     super.initState();

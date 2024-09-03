@@ -93,9 +93,11 @@ class _SignUpState extends State<SignUp> {
 
       if (snapshot.value == null) {
         // 'test' 필드가 null이면 데이터를 저장
-        await _realtime.ref().child("users").child(email.split('@')[0]).set({
-          "name": email.split('@')[0],
-        });
+        await _realtime
+            .ref()
+            .child("users")
+            .child(email.split('@')[0])
+            .set({"name": email.split('@')[0], "email": email});
       }
       if (mounted && credential.user != null) {
         // 로딩 화면을 잠깐 표시

@@ -1,8 +1,8 @@
 class LionUserModel {
   final String? name;
-  final String? description, mbti, track, image;
+  final String? description, mbti, track, image, email;
 
-  LionUserModel(this.image,
+  LionUserModel(this.image, this.email,
       {required this.name,
       required this.description,
       required this.mbti,
@@ -12,5 +12,6 @@ class LionUserModel {
         description = json['description'],
         mbti = json['mbti'],
         track = json['track'],
-        image = json['image'];
+        image = json['image'],
+        email = json['email'];
 }
