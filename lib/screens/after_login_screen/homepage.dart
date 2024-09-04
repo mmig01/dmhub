@@ -80,11 +80,11 @@ class HomepageState extends State<Homepage> {
 
   Future<void> setLionUserModel() async {
     if (_user != null && _user!.email != null) {
+      var name = "${_user!.email}".split('@')[0];
+      var emailname = "${_user!.email}".split('@')[1].split('.')[0];
       try {
-        DataSnapshot snapshot = await _realtime
-            .ref("users")
-            .child(_user!.email!.split('@')[0])
-            .get();
+        DataSnapshot snapshot =
+            await _realtime.ref("users").child(name + emailname).get();
 
         if (snapshot.value != null) {
           Map<String, dynamic> toMap = snapshot.value as Map<String, dynamic>;

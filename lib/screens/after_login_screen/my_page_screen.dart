@@ -59,11 +59,11 @@ class _MyPageScreenState extends State<MyPageScreen> {
 
   Future<void> setLionUserModel() async {
     if (_user != null && _user!.email != null) {
+      var name = "${_user!.email}".split('@')[0];
+      var emailname = "${_user!.email}".split('@')[1].split('.')[0];
       try {
-        DataSnapshot snapshot = await _realtime
-            .ref("users")
-            .child(_user!.email!.split('@')[0])
-            .get();
+        DataSnapshot snapshot =
+            await _realtime.ref("users").child(name + emailname).get();
 
         if (snapshot.value != null) {
           Map<String, dynamic> toMap = snapshot.value as Map<String, dynamic>;
@@ -78,6 +78,8 @@ class _MyPageScreenState extends State<MyPageScreen> {
   }
 
   Future<void> _pickAndUploadImage() async {
+    var name = "${_user!.email}".split('@')[0];
+    var emailname = "${_user!.email}".split('@')[1].split('.')[0];
     if (_user != null && _user!.email != null) {
       try {
         // 지정된 사용자 디렉토리의 참조를 가져옵니다.
@@ -104,7 +106,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
         // Realtime Database에 URL 저장
         await _realtime
             .ref("users")
-            .child(_user!.email!.split('@')[0])
+            .child(name + emailname)
             .update({'image': downloadURL});
         if (mounted) {
           setState(() {
@@ -118,6 +120,9 @@ class _MyPageScreenState extends State<MyPageScreen> {
   }
 
   Future<void> changeInfo() async {
+    var name = "${_user!.email}".split('@')[0];
+    var emailname = "${_user!.email}".split('@')[1].split('.')[0];
+    var savename = name + emailname;
     late String info;
     setState(() {
       info = _controller.text;
@@ -131,10 +136,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
           ),
         );
       }
-      await _realtime
-          .ref("users")
-          .child(_user!.email!.split('@')[0])
-          .update({"name": info});
+      await _realtime.ref("users").child(savename).update({"name": info});
       setState(() {
         setLionUserModel();
       });
@@ -151,7 +153,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
       }
       await _realtime
           .ref("users")
-          .child(_user!.email!.split('@')[0])
+          .child(savename)
           .update({"description": info});
       setState(() {
         setLionUserModel();
@@ -165,10 +167,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
           ),
         );
       }
-      await _realtime
-          .ref("users")
-          .child(_user!.email!.split('@')[0])
-          .update({"track": info});
+      await _realtime.ref("users").child(savename).update({"track": info});
       setState(() {
         setLionUserModel();
       });
@@ -181,10 +180,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
           ),
         );
       }
-      await _realtime
-          .ref("users")
-          .child(_user!.email!.split('@')[0])
-          .update({"mbti": info});
+      await _realtime.ref("users").child(savename).update({"mbti": info});
       setState(() {
         setLionUserModel();
       });

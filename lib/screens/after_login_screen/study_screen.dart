@@ -19,7 +19,7 @@ class StudyScreen extends StatelessWidget {
             height: 20,
           ),
           const Text(
-            "개발 중입니다",
+            "개발 중입니다..",
             style: TextStyle(
               fontFamily: 'Sunflower-Light',
               fontSize: 25,

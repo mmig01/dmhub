@@ -88,16 +88,19 @@ class _SignUpState extends State<SignUp> {
       final credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
 
+      var name = email.split('@')[0];
+      var emailname = email.split('@')[1].split('.')[0];
       DataSnapshot snapshot =
-          await _realtime.ref().child("users").child(email.split('@')[0]).get();
+          await _realtime.ref().child("users").child(name + emailname).get();
 
       if (snapshot.value == null) {
         // 'test' 필드가 null이면 데이터를 저장
+
         await _realtime
             .ref()
             .child("users")
-            .child(email.split('@')[0])
-            .set({"name": email.split('@')[0], "email": email});
+            .child(name + emailname)
+            .set({"name": name, "email": email});
       }
       if (mounted && credential.user != null) {
         // 로딩 화면을 잠깐 표시

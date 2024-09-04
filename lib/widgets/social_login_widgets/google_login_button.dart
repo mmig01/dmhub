@@ -70,23 +70,19 @@ class GoogleLoginButtonState extends State<GoogleLoginButton> {
       }
     }
 
+    var name = "${_user!.email}".split('@')[0];
+    var emailname = "${_user!.email}".split('@')[1].split('.')[0];
     if (mounted && _user != null) {
-      DataSnapshot snapshot = await _realtime
-          .ref()
-          .child("users")
-          .child("${_user!.email}".split('@')[0])
-          .get();
+      DataSnapshot snapshot =
+          await _realtime.ref().child("users").child(name + emailname).get();
 
       if (snapshot.value == null) {
         // 'test' 필드가 null이면 데이터를 저장
         await _realtime
             .ref()
             .child("users")
-            .child("${_user!.email}".split('@')[0])
-            .set({
-          "name": "${_user!.email}".split('@')[0],
-          "email": _user!.email
-        });
+            .child(name + emailname)
+            .set({"name": name, "email": _user!.email});
       }
       // 로딩 화면을 잠깐 표시
       if (mounted) {
